@@ -20,14 +20,6 @@ export default function Header() {
     setOpenProfile(!openProfile);
   };
 
-  const handleAuctionClick = (event) => {
-    if (!isLoggedIn) {
-      event.preventDefault();
-      alert('로그인이 필요합니다.');
-      navigate('/login');
-    }
-  };
-
   // console.log(isNavOpen);
   useEffect(() => {
     setIsLoggedIn(Boolean(localStorage.getItem('isLoggedIn')));
@@ -72,11 +64,7 @@ export default function Header() {
               style={{ display: isSearchOpen ? 'none' : '' }}
             >
               <li>
-                <Link
-                  to={'/auctionlist'}
-                  className="link"
-                  onClick={handleAuctionClick}
-                >
+                <Link to={'/auctionlist'} className="link">
                   경매
                 </Link>
               </li>

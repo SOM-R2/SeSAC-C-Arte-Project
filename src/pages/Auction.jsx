@@ -7,6 +7,8 @@ import artData from '../data/auction.json';
 import Header from '../components/header/Header';
 import Footer from '../components/footer/Footer';
 import AuctionCountdown from '../components/Auction/AuctionCountdown';
+import { useDispatch, useSelector } from 'react-redux';
+import { placeBid } from '../components/Auction/auctionSlice';
 
 const AuctionPage = () => {
   // 커튼 요소를 참조하기 위한 ref 생성
@@ -54,28 +56,66 @@ const AuctionPage = () => {
   const handleShowModal = () => setShowModal(true);
 
   const handleCloseBidSubmittedModal = () => setShowBidSubmittedModal(false);
-  const handleShowBidSubmittedModal = () => setShowBidSubmittedModal(true);
+  // const handleShowBidSubmittedModal = () => setShowBidSubmittedModal(true);
 
-  const handleBidSubmit = () => {
-    handleCloseModal();
-    handleShowBidSubmittedModal();
-    // You can perform additional actions here, such as sending bid details to the server
+  // const handleBidSubmit = () => {
+  //   handleCloseModal();
+  //   handleShowBidSubmittedModal();
+  //   // You can perform additional actions here, such as sending bid details to the server
+  // };
+
+  const [bidAmount, setBidAmount] = useState('');
+  const [user, setUser] = useState('');
+  const dispatch = useDispatch();
+
+  // 최고 입찰가를 가져옴
+  const highestBidAmount = useSelector(
+    (state) => state.auction.auctions[artId]?.highestBid || 0
+  );
+
+  const handleBid = () => {
+    if (
+      bidAmount.trim() === '' ||
+      isNaN(bidAmount) ||
+      parseInt(bidAmount, 10) <= 0
+    ) {
+      alert('유효한 입찰가를 입력하세요.');
+      return;
+    }
+
+    // 입찰가가 시작 가격보다 작은 경우 경고 메시지 표시
+    if (parseInt(bidAmount, 10) < selectedArt.bid_starting_price) {
+      alert(
+        `입찰가는 시작 가격(${selectedArt.bid_starting_price}원)보다 커야 합니다.`
+      );
+      return;
+    }
+
+    // 사용자가 입력한 입찰가와 현재 최고 입찰가를 비교
+    if (parseInt(bidAmount, 10) > highestBidAmount) {
+      setShowBidSubmittedModal(true);
+      dispatch(placeBid({ artId, user, amount: parseInt(bidAmount, 10) }));
+      setBidAmount('');
+      setShowModal(false);
+    } else {
+      alert('최고가가 아닙니다. 입찰가를 다시 입력해주세요.');
+    }
   };
 
-  // Calculate remainingche time function
-  // function calculateRemainingTime(endTime) {
-  //   const currentTime = new Date().getTime();
-  //   const remaining = Math.max(0, endTime - currentTime); // Ensure remaining time is not negative
-  //   return remaining;
-  // }
+  const auctionStarted = useSelector(
+    (state) => state.auctionStatus.auctionStarted
+  );
 
-  // Update remaining time every second
-  // useEffect(() => {
-  //   const timer = setInterval(() => {
-  //     setRemainingTime(calculateRemainingTime(auctionEndTime));
-  //   }, 500);
+  // 오늘 날짜를 YYYY-MM-DD 형식으로 포맷하는 함수
+  const formatDate = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
 
-  // Cleanup function to clear the interval when component unmounts
+  const today = formatDate(new Date());
+
   return (
     <>
       <Header />
@@ -108,39 +148,29 @@ const AuctionPage = () => {
                 <h2 className="artwork-title">{selectedArt.bid_art_title}</h2>
                 <h3 className="artist">Artist: {selectedArt.artist}</h3>
                 <p className="description">
-                  Description: {selectedArt.description}
+                  작품 설명: {selectedArt.description}
                 </p>
 
                 <div className="price-section">
                   <div>
-                    Estimated Price:
+                    예상 가격:{' '}
                     <span className="price-value">
-                      ${selectedArt.bid_estimate_price}
+                      ₩{selectedArt.bid_estimate_price}
                     </span>
                   </div>
                   <div>
-                    Starting Price:
+                    시작 가격:{' '}
                     <span className="price-value">
-                      ${selectedArt.bid_starting_price}
+                      ₩{selectedArt.bid_starting_price}
                     </span>
                   </div>
                 </div>
 
                 <div key={selectedArt.id}>
-                  <p>Published Year: {selectedArt.published_year}</p>
-                  <p> Bid Code:{selectedArt.bid_code}</p>
-                  <p>Date: {selectedArt.bid_date}</p>
-
-                  {/* <div className="bid-section">
-            <p className="bid-label">Price: {selectedArt.price}</p>
-          </div>  */}
+                  <p>제작 연도: {selectedArt.published_year}</p>
+                  <p>경매 번호: {selectedArt.bid_code}</p>
+                  <p>경매일: {today}</p>
                 </div>
-
-                {/* <div className="timer-container">
-          <div className="timer-frame"> 
-            <p className="remaining-time">Closing:{formatRemainingTime(remainingTime)}</p>
-          </div>
-        </div> */}
                 <AuctionCountdown />
                 {bidDetails.amount && (
                   <div className="bid-details">
@@ -153,7 +183,14 @@ const AuctionPage = () => {
                     </p>
                   </div>
                 )}
-                <button className="bid-button" onClick={handleShowModal}>
+                <button
+                  className="bid-button"
+                  onClick={
+                    auctionStarted
+                      ? handleShowModal
+                      : () => alert('경매가 시작되지 않았습니다.')
+                  }
+                >
                   Place your bid
                 </button>
               </div>
@@ -174,13 +211,12 @@ const AuctionPage = () => {
                 <div className="input-group">
                   <span className="input-group-text">₩</span>
                   <input
-                    type="text"
+                    type="number"
                     className="form-control"
                     id="bidAmount"
-                    value={bidDetails.amount}
-                    onChange={(e) =>
-                      setBidDetails({ ...bidDetails, amount: e.target.value })
-                    }
+                    value={bidAmount}
+                    onChange={(e) => setBidAmount(e.target.value)}
+                    placeholder="입찰 금액"
                   />
                 </div>
               </div>
@@ -192,10 +228,9 @@ const AuctionPage = () => {
                   type="text"
                   className="form-control"
                   id="bidderName"
-                  value={bidDetails.name}
-                  onChange={(e) =>
-                    setBidDetails({ ...bidDetails, name: e.target.value })
-                  }
+                  value={user}
+                  onChange={(e) => setUser(e.target.value)}
+                  placeholder="사용자 이름"
                 />
               </div>
               <div className="mb-3">
@@ -232,7 +267,7 @@ const AuctionPage = () => {
             <Button variant="secondary" onClick={handleCloseModal}>
               Close
             </Button>
-            <Button variant="primary" onClick={handleBidSubmit}>
+            <Button variant="primary" onClick={handleBid}>
               Submit Bid
             </Button>
           </Modal.Footer>
