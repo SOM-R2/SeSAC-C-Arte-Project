@@ -47,7 +47,6 @@
   margin-left: 10px;
 }
 .artwork-details {
-  /* border: 1px solid #ccc; */
   border-radius: 8px;
   padding: 20px;
 }
@@ -146,14 +145,12 @@
 html,
 body {
   height: 100%;
-  /* background: #000000; */
 }
 
 /* Curtain effect */
 html,
 body {
   height: 100%;
-  /* background: #000000; */
 }
 
 .outer {
@@ -181,9 +178,7 @@ body {
   right: 0;
   width: 100%;
   height: 100%;
-  /* border: 3px solid red; */
   box-sizing: border-box;
-  border-radius: 25px;
   overflow: hidden;
   background: transparent;
   animation-delay: 3000ms;
@@ -241,8 +236,6 @@ body {
 }
 
 .curtain .panel-right {
-  /*transform: translateX(100%);*/
-  /*transform: translateX(calc(100% + 1px));*/
   animation: slideRight 5s forwards;
   animation-delay: 300ms;
 }
