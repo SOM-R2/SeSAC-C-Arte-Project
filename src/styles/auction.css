@@ -183,7 +183,6 @@ body {
   height: 100%;
   /* border: 3px solid red; */
   box-sizing: border-box;
-  border-radius: 25px;
   overflow: hidden;
   background: transparent;
   animation-delay: 3000ms;
