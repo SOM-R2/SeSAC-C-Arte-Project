@@ -20,20 +20,14 @@ export default function Header() {
     setOpenProfile(!openProfile);
   };
 
-  // console.log(isNavOpen);
   useEffect(() => {
     setIsLoggedIn(Boolean(localStorage.getItem('isLoggedIn')));
   }, [isLoggedIn]);
 
   const handleClick = () => {
     setIsNavOpen(!isNavOpen);
-    // setIsNavOpen(true);
   };
 
-  // const toggleNav = () => {
-  //   setIsNavOpen(!isNavOpen);
-  //   setIsSearchOpen(false);
-  // };
   const toggleSearch = () => {
     setIsSearchOpen(!isSearchOpen);
     setIsNavOpen(false); // Close nav when opening search

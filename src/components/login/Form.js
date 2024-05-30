@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import { useContext, useState } from "react";
-import useForm from "../../hooks/use-form";
+import { useContext, useState } from 'react';
+import useForm from '../../hooks/use-form';
 import {
   actionsContainer,
   formContainer,
@@ -10,18 +10,18 @@ import {
   labelStyle,
   narrow,
   wide,
-} from "../../styles/form-style";
-import CartContext from "../../store/cart-context";
-import OrderButton from "./OrderButton";
+} from '../../styles/form-style';
+import CartContext from '../../store/cart-context';
+import OrderButton from './OrderButton';
 
-import LoginRegister from "../../pages/LoginRegister";
+import LoginRegister from '../../pages/LoginRegister';
 
 const Form = (props) => {
-  const [zonecode, setZonecode] = useState("");
-  const [address, setAddress] = useState("");
-  const [detailedAddress, setDetailedAddress] = useState("");
+  const [zonecode, setZonecode] = useState('');
+  const [address, setAddress] = useState('');
+  const [detailedAddress, setDetailedAddress] = useState('');
   const { totalPrice, resetCart } = useContext(CartContext);
-  const total = `${totalPrice.toLocaleString("ko-KO")}원`;
+  const total = `${totalPrice.toLocaleString('ko-KO')}원`;
 
   const nameRegEx = /^[가-힣]{2,4}$/;
   const tel1RegEx = /^\d{2,3}$/;
@@ -70,17 +70,6 @@ const Form = (props) => {
     reset: tel3Reset,
   } = useForm(tel2RegEx);
 
-  // const {
-  //   isRequired: addressIsRequired,
-
-  //   enteredValue: enteredAddress,
-  //   isValid: addressIsValid,
-  //   isInvalidUI: addressIsInvalidUI,
-  //   inputChangeHandler: addressChangeHandler,
-  //   inputBlurHandler: addressBlurHandler,
-  //   reset: addressReset,
-  // } = useForm(addressRegEx);
-
   const {
     isRequired: memoIsRequired,
     enteredValue: enteredMemo,
@@ -91,12 +80,11 @@ const Form = (props) => {
     reset: memoReset,
   } = useForm();
 
-  // let addressIsValid = false;
   const addressIsValid = addressRegEx.test(detailedAddress);
   const resetAddress = () => {
-    setZonecode("");
-    setAddress("");
-    setDetailedAddress("");
+    setZonecode('');
+    setAddress('');
+    setDetailedAddress('');
   };
 
   let telIsValid = false;
@@ -201,20 +189,6 @@ const Form = (props) => {
             />
           </div>
         </div>
-        {/* <div css={inputContainer}>
-          <strong css={labelStyle(addressIsRequired)}>
-            address
-          </strong>
-          <input
-            css={[inputStyle(addressIsInvalidUI), wide]}
-            name="address"
-            type="text"
-            value={enteredAddress}
-            onChange={addressChangeHandler}
-            onBlur={addressBlurHandler}
-            required={addressIsRequired}
-          />
-        </div> */}
         <div css={inputContainer}>
           <strong css={labelStyle(memoIsRequired)}>delivery memo</strong>
           <input
