@@ -22,7 +22,7 @@ footer h2 {
   align-items: center;
   max-width: 1200px;
 }
-/* ----------------------------------------------------- */
+
 /* 푸터로고 */
 .footerlogo {
   cursor: pointer;
@@ -31,7 +31,7 @@ footer h2 {
 .footerlogo img {
   width: 100%;
 }
-/* ---------------------- */
+
 /* row */
 .row {
   color: black;

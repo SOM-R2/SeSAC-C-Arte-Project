@@ -56,13 +56,6 @@ const AuctionPage = () => {
   const handleShowModal = () => setShowModal(true);
 
   const handleCloseBidSubmittedModal = () => setShowBidSubmittedModal(false);
-  // const handleShowBidSubmittedModal = () => setShowBidSubmittedModal(true);
-
-  // const handleBidSubmit = () => {
-  //   handleCloseModal();
-  //   handleShowBidSubmittedModal();
-  //   // You can perform additional actions here, such as sending bid details to the server
-  // };
 
   const [bidAmount, setBidAmount] = useState('');
   const [user, setUser] = useState('');
