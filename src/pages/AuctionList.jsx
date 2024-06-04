@@ -39,7 +39,8 @@ export default function AuctionList() {
           <h3>today's auction</h3>
           <span>{formattedDate}(14PM)</span>
           <span className={`auction-open ${isAuctionEnded ? 'ended' : ''}`}>
-            {isAuctionEnded ? 'Ended' : 'Open'}
+            {' '}
+            Open
           </span>
           <AuctionCountdown onAuctionEnd={handleAuctionEnd} />
         </div>
