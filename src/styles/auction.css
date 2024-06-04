@@ -100,6 +100,7 @@
 .buttons-container {
   display: flex;
 }
+
 /* Button styles */
 .bid-button {
   width: 200px;
@@ -111,8 +112,20 @@
   border-radius: 3px;
   border: none;
   cursor: pointer;
+
   &:hover {
     color: #800020;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    background-color: #ccc;
+    color: #999;
+
+    &:hover {
+      background-color: #ccc;
+      color: #999;
+    }
   }
 }
 

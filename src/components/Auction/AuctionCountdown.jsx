@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { startAuction, endAuction } from './auctionStatusSlice';
 
-function AuctionCountdown() {
+function AuctionCountdown({ onAuctionEnd }) {
   const [timeLeft, setTimeLeft] = useState('');
   const auctionStarted = useSelector(
     (state) => state.auctionStatus.auctionStarted
@@ -14,7 +14,7 @@ function AuctionCountdown() {
     const auctionStartTime = new Date();
     auctionStartTime.setHours(14, 0, 0, 0); // 오늘 날짜의 14:00:00으로 설정
     const auctionEndTime = new Date(auctionStartTime);
-    auctionEndTime.setHours(auctionEndTime.getHours() + 20); // 경매 종료 시간은 경매 시작 시간으로부터 2시간 후로 설정
+    auctionEndTime.setHours(auctionEndTime.getHours() + 2); // 경매 종료 시간은 경매 시작 시간으로부터 2시간 후로 설정
 
     const calculateTimeLeft = () => {
       const currentTime = new Date();
@@ -36,6 +36,7 @@ function AuctionCountdown() {
         } else {
           setTimeLeft('경매 종료');
           dispatch(endAuction());
+          onAuctionEnd(); // 경매 종료 시 이벤트 호출
         }
       } else {
         const seconds = Math.floor((difference / 1000) % 60);
@@ -53,7 +54,7 @@ function AuctionCountdown() {
     const timer = setInterval(calculateTimeLeft, 1000); // 1초마다 업데이트
 
     return () => clearInterval(timer); // 컴포넌트가 언마운트되면 타이머 해제
-  }, [dispatch, auctionStarted]);
+  }, [dispatch, auctionStarted, onAuctionEnd]);
 
   return (
     <div>

@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import AuctionCountdown from '../components/Auction/AuctionCountdown';
 import AuctionItemList from '../components/Auction/AuctionItemList';
 import auctionData from '../data/auction.json';
@@ -22,6 +23,12 @@ export default function AuctionList() {
     'Dec',
   ];
   const formattedDate = `${months[today.getMonth()]} ${today.getDate()}`;
+  const [isAuctionEnded, setIsAuctionEnded] = useState(false);
+
+  const handleAuctionEnd = () => {
+    setIsAuctionEnded(true);
+  };
+
   return (
     <>
       <Header />
@@ -30,7 +37,7 @@ export default function AuctionList() {
           <h3>today's auction</h3>
           <span>{formattedDate}(14PM)</span>
           <span className="auction-open"> Open</span>
-          <AuctionCountdown />
+          <AuctionCountdown onAuctionEnd={handleAuctionEnd} />
         </div>
         <div>오늘의 특별한 작품들을 만나보세요.</div>
         <AuctionItemList data={auctionData} type="bid" />

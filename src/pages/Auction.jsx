@@ -1,6 +1,6 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React, { useState, useEffect, useRef } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Modal, Button } from 'react-bootstrap';
 import '../styles/auction.css';
 import artData from '../data/auction.json';
@@ -99,6 +99,27 @@ const AuctionPage = () => {
     (state) => state.auctionStatus.auctionStarted
   );
 
+  const [isAuctionEnded, setIsAuctionEnded] = useState(false);
+  const handleAuctionEnd = () => {
+    setIsAuctionEnded(true);
+  };
+  const isLoggedIn = localStorage.getItem('isLoggedIn');
+
+  const navigate = useNavigate(); // 라우팅을 위해 useNavigate 훅 사용
+
+  const handleButtonClick = () => {
+    if (auctionStarted) {
+      if (isLoggedIn) {
+        handleShowModal();
+      } else {
+        alert('로그인이 필요한 서비스입니다.');
+        navigate('/login'); // 로그인 페이지로 이동
+      }
+    } else {
+      alert('경매가 시작되지 않았습니다.');
+    }
+  };
+
   // 오늘 날짜를 YYYY-MM-DD 형식으로 포맷하는 함수
   const formatDate = (date) => {
     const year = date.getFullYear();
@@ -164,7 +185,7 @@ const AuctionPage = () => {
                   <p>경매 번호: {selectedArt.bid_code}</p>
                   <p>경매일: {today}</p>
                 </div>
-                <AuctionCountdown />
+                <AuctionCountdown onAuctionEnd={handleAuctionEnd} />
                 {bidDetails.amount && (
                   <div className="bid-details">
                     <h4>Your Bid Details:</h4>
@@ -177,12 +198,9 @@ const AuctionPage = () => {
                   </div>
                 )}
                 <button
-                  className="bid-button"
-                  onClick={
-                    auctionStarted
-                      ? handleShowModal
-                      : () => alert('경매가 시작되지 않았습니다.')
-                  }
+                  className={`bid-button ${isAuctionEnded ? 'disabled' : ''}`}
+                  onClick={handleButtonClick}
+                  disabled={isAuctionEnded}
                 >
                   Place your bid
                 </button>
@@ -221,9 +239,9 @@ const AuctionPage = () => {
                   type="text"
                   className="form-control"
                   id="bidderName"
-                  value={user}
+                  value={localStorage.getItem('name')}
                   onChange={(e) => setUser(e.target.value)}
-                  placeholder="사용자 이름"
+                  placeholder="입찰자 성함"
                 />
               </div>
               <div className="mb-3">
@@ -234,10 +252,11 @@ const AuctionPage = () => {
                   type="email"
                   className="form-control"
                   id="bidderEmail"
-                  value={bidDetails.email}
+                  value={localStorage.getItem('email')}
                   onChange={(e) =>
                     setBidDetails({ ...bidDetails, email: e.target.value })
                   }
+                  placeholder="이메일"
                 />
               </div>
               <div className="mb-3">
@@ -248,10 +267,11 @@ const AuctionPage = () => {
                   type="tel"
                   className="form-control"
                   id="bidderPhone"
-                  value={bidDetails.phone}
+                  value={localStorage.getItem('phone')}
                   onChange={(e) =>
                     setBidDetails({ ...bidDetails, phone: e.target.value })
                   }
+                  placeholder="010-1111-1111"
                 />
               </div>
             </form>
